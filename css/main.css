@@ -284,3 +284,35 @@ a {
     background-color: #00bcd4; /* cor da bolinha ativa */
 }
 
+@media (max-width: 768px) {
+  .carousel-container {
+    width: 95%; /* Aumenta a largura do carrossel para 95% da tela */
+    max-width: 100%; /* Garante que o carrossel ocupe a tela inteira */
+    margin: 0 auto; /* Centraliza o carrossel */
+    top: 10%; /* Ajusta a posição vertical para o carrossel */
+    height: 40vh; /* Ajuste a altura do carrossel para 40% da altura da tela */
+  }
+
+  .carousel-image {
+    width: 100%; /* Garante que a imagem ocupe 100% da largura do carrossel */
+    height: auto; /* Mantém a proporção da imagem */
+    object-fit: cover; /* Ajusta a imagem para cobrir todo o espaço do carrossel */
+  }
+
+  .dot-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .dot {
+    width: 8px; /* Tamanho menor para as bolinhas */
+    height: 8px;
+    margin: 0 5px;
+  }
+
+  .dot.active {
+    background-color: #00bcd4; /* Cor da bolinha ativa */
+  }
+}
+
