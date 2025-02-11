@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETL Income Statement using Databricks</title>
+    <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet">
+    <link href="../../css/main.css" rel="stylesheet"> <!-- Referência ao CSS criado -->
+</head>
+<body id="projects">
+
+    <div class="container">
+        <h1>ETL Income Statement using Databricks</h1>
+
+        <img src="../../images/data_analysis_projects/databricks.png"  width="700" height="400">
+
+        <div class="links">
+            <a href="https://github.com/OscarFantozzi/ETL-Income-Statement-Databricks" target="_blank">
+                <img src="../../icons/github.png" alt="GitHub" width="65" height="30">
+            </a>
+            
+                <img src="../../icons/reading.png" alt="Reading" width="25" height="25">10'
+          
+        </div>
+
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <h3>Table of contents</h3>
+            <ul>
+                <li><a href="#glossary">Glossary</a></li>
+                <li><a href="#project-overview">Project Overview</a></li>
+                <li><a href="#what-is-databricks">What is Databricks?</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#streaming-or-batch">Streaming or Batch?</a></li>
+                <li><a href="#data-consumption">Data Consumption</a></li>
+                <li><a href="#steps">Steps</a></li>
+                <li><a href="#step-1-creating-layers">Step 1: Creating Layers</a></li>
+                <li><a href="#step-2-loading-the-bronze-layer">Step 2: Loading the Bronze Layer</a></li>
+                <li><a href="#step-3-cleaning-data-and-saving-to-the-silver-layer">Step 3: Cleaning Data and Saving to the Silver Layer</a></li>
+                <li><a href="#step-4-saving-cleaned-data-to-the-gold-layer">Step 4: Saving Cleaned Data to the Gold Layer</a></li>
+                <li><a href="#step-5-consuming-data-in-power-bi">Step 5: Consuming Data in Power BI</a></li>
+                <li><a href="#conclusion-and-next-steps">Conclusion and Next Steps</a></li>
+            </ul>
+        </nav>
+
+        <section id="glossary">
+            <h2>Glossary</h2>
+            <table style="width: 100%; border-collapse: separate; border-spacing: 0 8px;">
+                <thead>
+                    <tr>
+                        <th style="padding: 10px; text-align: left; background-color: #f2f2f2; font-weight: bold;">Term</th>
+                        <th style="padding: 10px; text-align: left; background-color: #f2f2f2; font-weight: bold;">Definition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background-color: #fafafa;">
+                        <td style="padding: 10px; font-weight: bold;">ACID</td>
+                        <td style="padding: 10px;">A set of rules ensuring that database operations are performed correctly and keep data consistent (Atomicity, Consistency, Isolation, Durability).</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold;">Apache Spark</td>
+                        <td style="padding: 10px;">A tool for processing large amounts of data quickly and distributed across multiple machines.</td>
+                    </tr>
+                    <tr style="background-color: #fafafa;">
+                        <td style="padding: 10px; font-weight: bold;">Batch Processing</td>
+                        <td style="padding: 10px;">A method of processing large volumes of data at once rather than analyzing data as it arrives.</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold;">Bronze Layer</td>
+                        <td style="padding: 10px;">The first data layer where raw data is stored without processing, as it arrives, before cleaning or transformation.</td>
+                    </tr>
+                    <tr style="background-color: #fafafa;">
+                        <td style="padding: 10px; font-weight: bold;">Data Lakehouse</td>
+                        <td style="padding: 10px;">A combination of a <strong>Data Lake</strong> (storing vast amounts of data) and a <strong>Data Warehouse</strong> (organizing data for analysis), offering the best of both.</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold;">Databricks</td>
+                        <td style="padding: 10px;">A cloud-based platform that simplifies large-scale data processing using <strong>Apache Spark</strong>, also used for data science and analytics.</td>
+                    </tr>
+                    <tr style="background-color: #fafafa;">
+                        <td style="padding: 10px; font-weight: bold;">Databricks Community Edition</td>
+                        <td style="padding: 10px;">A free version of Databricks, ideal for testing and learning Spark and other tools without costs.</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold;">dbfs</td>
+                        <td style="padding: 10px;">Databricks File System, which organizes and stores data like a folder system on a computer, but in the cloud.</td>
+                    </tr>
+                    <tr style="background-color: #fafafa;">
+                        <td style="padding: 10px; font-weight: bold;">Delta Lake</td>
+                        <td style="padding: 10px;">Technology that enhances data storage by ensuring data remains organized, secure, and correctly updated without errors.</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold;">Gold Layer</td>
+                        <td style="padding: 10px;">The final data layer, where data is fully processed and ready for use in reports and analysis.</td>
+                    </tr>
+                    <tr style="background-color: #fafafa;">
+                        <td style="padding: 10px; font-weight: bold;">Landing Zone</td>
+                        <td style="padding: 10px;">The area where raw data is initially stored. It is the "first stop" for data before being organized.</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold;">Medallion Architecture</td>
+                        <td style="padding: 10px;">A structure that organizes data into layers (bronze, silver, gold), with each layer having a specific processing and refinement level.</td>
+                    </tr>
+                    <tr style="background-color: #fafafa;">
+                        <td style="padding: 10px; font-weight: bold;">/mnt</td>
+                        <td style="padding: 10px;">A directory in Databricks used to connect and access data stored in external services like Azure or AWS.</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold;">PySpark</td>
+                        <td style="padding: 10px;">A version of Spark that works with Python, making Spark accessible to Python developers.</td>
+                    </tr>
+                    <tr style="background-color: #fafafa;">
+                        <td style="padding: 10px; font-weight: bold;">Silver Layer</td>
+                        <td style="padding: 10px;">The second data layer, where data is cleaned and organized, ready for deeper analysis or reporting.</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: bold;">Streaming Processing</td>
+                        <td style="padding: 10px;">A method for processing data in real-time, analyzing it as it arrives.</td>
+                    </tr>
+                    <tr style="background-color: #fafafa;">
+                        <td style="padding: 10px; font-weight: bold;">Unity Catalog</td>
+                        <td style="padding: 10px;">A Databricks tool for centralized data governance, organizing and controlling access to data efficiently.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+
+        <!-- Project Overview Section -->
+        <section id="project-overview">
+            <h2>Project Overview</h2>
+            <p>In the previous project, an income statement was automated using Python and CSV files. With the increase in data volume, the pipeline was migrated to <strong>Databricks Community Edition</strong>, ensuring scalability, automation, and database integration. One of the main challenges of this project was translating the treatments previously done in pure Python into <strong>PySpark</strong>, a language I am not very familiar with, although it shares some similarities with Python.</p>
+            <p>Alternatively, I could have opted for <strong>SQL</strong>, which I am more proficient in, but I chose PySpark to gain familiarity with the language.</p>
+            <p>Let’s break it down: later in this document, I will explain what Databricks is, its layers, why it was chosen, and the problems it addresses.</p>
+        </section>
+
+        <section id="how-it-works">
+            <h2>How it works</h2>
+            <ul>
+                <li><strong>Landing Zone:</strong>Raw data, such as CSV files, is stored in this layer without any modifications.</li>
+                <li><strong>Bronze Layer:</strong>Data from the Landing Zone is transferred and stored in the Delta Lake format, ready for processing.</li>
+                <li><strong>Silver Layer:</strong>At this stage, the data is cleaned and transformed to ensure consistency and quality.</li>
+                <li><strong>Gold Layer:</strong>The refined and cleaned data is organized for reporting and analysis.</li>
+                <li><strong>Power BI Consumption:</strong> Power BI connects to Databricks via ODBC/JDBC, enabling direct consumption of the created tables.</li>
+            </ul>
+        </section>
+        
+        <section id="what-is-databricks">
+            <h2>What is Databricks?</h2>
+            <p><strong>Databricks</strong> is a cloud-based platform that simplifies the processing and analysis of large-scale data quickly and efficiently. It combines the technology of <strong>Apache Spark</strong>—a powerful tool for large-scale data processing—with a collaborative environment where teams can develop, share, and automate data pipelines, as well as execute advanced analytics.</p>
+            <p>Databricks allows you to organize data into different "layers," ranging from raw data to fully processed data ready for dashboards and reports. It is widely used for <strong>data science</strong>, <strong>data engineering</strong>, and <strong>data analytics</strong> in real-time or large-scale scenarios.</p>
+        
+            <h3>Here are some key advantages of using Databricks:</h3>
+            <ul>
+                <li><strong>Scalability:</strong> Handles large data volumes by distributing tasks across multiple machines.</li>
+                <li><strong>Collaboration:</strong> Enables data teams to work together using shared notebooks.</li>
+                <li><strong>Automation:</strong> Simplifies the creation of automated workflows to process and transform data.</li>
+                <li><strong>Flexibility:</strong> Works with various data sources and integrates seamlessly with BI tools and databases.</li>
+            </ul>
+        </section>
+        
+        <section id="architecture">
+            <h2>Architecture</h2>
+            <img src="media/image1.png" alt="Architecture Diagram">
+        
+            <p>The migration architecture for the income statement  project to Databricks follows a multi-hop concept using Delta Lake, divided into data processing layers: Landing Zone, Bronze, Silver, and Gold. Each layer has a specific role in processing and transforming the data, ensuring an efficient flow and high-quality data for analysis.</p>
+        
+            <ul>
+                <li><strong>Landing Zone:</strong>
+                    
+                        <li>The Landing Zone is the entry point for raw data, where CSV files are directly uploaded. The data arrives in its original format without any transformation or cleaning. This ensures that the complete data history is preserved for future reprocessing or auditing.</li>
+                   
+                </li>
+                <li><strong>Bronze Layer:</strong>
+                   
+                        <li>In the Bronze Layer, raw data from the Landing Zone is moved and stored in Delta Lake format. At this stage, the data is integrated and prepared for transformation processes. While still raw, it is organized in a more suitable format for subsequent processing.</li>
+                    
+                </li>
+                <li><strong>Silver Layer:</strong>
+                   
+                        <li>In the Silver Layer, data is cleaned, transformed, and standardized. This stage involves filtering and correcting the data, removing inconsistencies, and adjusting data types. Here, tables are prepared for more detailed analyses, ensuring consistent and ready-to-use data.</li>
+                   
+                </li>
+                <li><strong>Gold Layer:</strong>
+                   
+                        <li>The Gold Layer is where data is business-ready. Data is aggregated and refined to generate deeper insights and analyses in visualization tools like Power BI. At this layer, the data is highly optimized for fast and efficient queries.</li>
+                   
+                </li>
+
+
+            </ul>
+        </section>
+
+        <section id="streaming-or-batch">
+            <h2>Streaming or Batch?</h2>
+            <p>Data processing can follow two main approaches: batch and streaming. Each has specific advantages depending on the nature of the data and processing needs.</p>
+        
+            <h3>Batch Processing:</h3>
+            <p>Batch involves collecting and processing large data volumes at defined intervals, such as daily, monthly, or as needed. This method is ideal when real-time analysis is unnecessary, and data can be grouped for later processing.</p>
+            
+            <ul>
+                <li><strong>Application in the project:</strong> For this DRE project, batch processing is the chosen method. Financial data is extracted at defined periods, such as monthly or quarterly closings, and does not require immediate responses. Batch processing consolidates this data periodically, ensuring efficient use of computational resources.</li>
+                <li><strong>Advantages:</strong> Batch simplifies processing large data volumes at once, optimizing resource usage without requiring continuous processing.</li>
+            </ul>
+        
+            <h3>Streaming Processing:</h3>
+            <p>Streaming involves processing data in real-time or near real-time as it arrives. This means the system can continuously respond to data changes, enabling immediate analysis.</p>
+        
+            <ul>
+                <li><strong>Future Possibility:</strong> While batch is the initial choice, the project may expand to include streaming in the future. If the company begins receiving financial data directly from a real-time database, streaming would allow immediate processing and analysis, facilitating instant decision-making.</li>
+                <li><strong>Advantages:</strong> Streaming is ideal for scenarios requiring immediate responses, such as continuous monitoring or real-time financial transaction flows.</li>
+            </ul>
+        </section>
+
+        <section id="data-consumption">
+            <h2>Data Consumption</h2>
+            <p>In this project, Power BI remains the primary tool for data visualization and analysis. The only significant change was the data source. Previously, data was extracted from a local database, but now the data source is Databricks.</p>
+        
+            <p>After processing and refining data in the Bronze, Silver, and Gold layers, it is connected to Power BI directly from Databricks. This ensures that the information used in reports and dashboards is always up to date, improving performance and scalability without relying on local databases.</p>
+        </section>
+        
+        <section id="steps">
+            <h2>Steps</h2>
+            <img src="media/image2.png" alt="Steps Flow Diagram">
+        
+            <p>The project was divided into four main steps, following the flow of Databricks' <strong>Bronze</strong>, <strong>Silver</strong>, and <strong>Gold</strong> layers. First, the <strong>layer structure</strong> was created to organize data into different processing levels. Then, raw data was loaded from the <strong>Landing Zone</strong> to the <strong>Bronze Layer</strong> (raw data), followed by cleaning and transformation for the <strong>Silver Layer</strong> (organized data). Finally, data was optimized and aggregated in the <strong>Gold Layer</strong> for reporting and analysis. The process was modularized into separate notebooks, making each step easier to manage and execute independently.</p>
+        
+            <h3>Step 1: Creating Layers</h3>
+            <p><strong>This step involves creating the landing zone, bronze, silver, and gold layers.</strong></p>
+        
+            <h4>Creating Landing Zone:</h4>
+            <pre># creating landing zone</pre>
+            <img src="media/image3.png" alt="Creating Landing Zone">
+        
+            <h4>Creating Bronze Layer:</h4>
+            <img src="media/image4.png" alt="Creating Bronze Layer">
+        
+            <h4>Creating Silver Layer:</h4>
+            <img src="media/image5.png" alt="Creating Silver Layer">
+        
+            <h4>Creating Gold Layer:</h4>
+            <img src="media/image6.png" alt="Creating Gold Layer">
+        
+            <h3>Step 2: Loading the Bronze Layer</h3>
+            <p>In this step, raw data from the Landing Zone is loaded into the Bronze Layer:</p>
+            <img src="media/image7.png" alt="Loading Bronze Layer">
+        
+            <h3>Step 3: Cleaning Data and Saving to the Silver Layer</h3>
+            <p>In this step, data from the Bronze Layer is cleaned and saved into the Silver Layer. The notebook can be accessed at this link: <a href="https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/3888749691583407/84552440955705/6757744284100272/latest.html">Loading Silver Layer</a>.</p>
+        
+            <h3>Step 4: Saving Cleaned Data to the Gold Layer</h3>
+            <p>In this step, cleaned data is moved to the Gold Layer, making it ready for consumption. The notebook can be accessed at this link: <a href="https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/3888749691583407/4087602558815085/6757744284100272/latest.html">Loading Gold Layer</a>.</p>
+        
+            <h3>Step 5: Consuming Data in Power BI</h3>
+            <p>Since I am using the Databricks Community Edition, which is not directly integrated with Azure (Power BI connector), I will connect using ODBC/JDBC. The first step is to install the ODBC driver from this link: <a href="https://www.databricks.com/spark/odbc-drivers-download">ODBC Driver</a>.</p>
+            <img src="media/image8.png" alt="ODBC Driver">
+        
+            <p>If everything is correctly set up, Databricks should appear among the connectors, as shown below:</p>
+            <img src="media/image9.png" alt="Databricks Connector">
+        
+            <p>Click <strong>Connect</strong> and fill in the following fields:</p>
+            <ul>
+                <li><strong>Server Hostname</strong></li>
+                <li><strong>HTTP Path</strong></li>
+            </ul>
+            <img src="media/image10.png" alt="Connection Fields">
+        
+            <p>To obtain this information, navigate to the Compute section in Databricks:</p>
+            <img src="media/image11.png" alt="Databricks Compute Section">
+        
+            <p>Click your active cluster, and under JDBC/ODBC, you will find the credentials:</p>
+            <img src="media/image12.png" alt="JDBC/ODBC Credentials">
+        
+            <p>After copying and pasting the credentials, you can access the layers created in Databricks:</p>
+            <img src="media/image13.png" alt="Databricks Layers Access">
+        
+            <p>Finally, select the database and the table you want to import.</p>
+        
+            <p><strong>Note:</strong> In my case, since I only want to replace the data source from local SQL to Databricks, I will modify the table source via Power Query's advanced editor. To do this:</p>
+            <ul>
+                <li>Go to the newly imported Databricks table and then open <strong>Advanced Editor.</strong></li>
+            </ul>
+            <img src="media/image14.png" alt="Power Query Advanced Editor">
+        
+            <p>Copy the code from the editor and adapt it for each table based on its name:</p>
+            <img src="media/image15.png" alt="Code Adaptation Example">
+        
+            <p>For example, in this case, I replaced the source for the table <strong>destruturadre:</strong></p>
+            <img src="media/image16.png" alt="Replaced Table Source">
+        
+            <p>After this step, close and apply changes in Power Query, and the data will be loaded into the dashboard:</p>
+            <img src="media/image17.png" alt="Power BI Dashboard">
+        </section>
+        
+        <section id="conclusion-and-next-steps">
+            <h2>Conclusion and Next Steps</h2>
+            <p>This project demonstrated how <strong>Databricks Community Edition</strong> facilitates migrating local ETL to the cloud, organizing data into layers (Landing Zone, Bronze, Silver, and Gold) and optimizing the processing pipeline.</p>
+            <p>In the project, I plan to migrate the pipeline to Microsoft Azure, exploring tools such as <strong>Azure Databricks</strong> and <strong>Azure Data Factory.</strong></p>
+        </section>
+
+        <footer>
+            <p><a href="mailto:seuemail@example.com">Get in conctact</a></p>
+            <p>
+              <a href="https://github.com/OscarFantozzi" target="_blank">GitHub</a> |
+              <a href="https://www.linkedin.com/in/oscarfantozzi/" target="_blank">LinkedIn</a>
+              <p>&copy; 2025 Oscar Fantozzi - Data Analysis Portfolio</p>
+            </p>
+          </footer>
+
+
+</div>
+
+
+
+    <script>
+        // Accordion functionality
+        var acc = document.getElementsByClassName("accordion");
+        for (var i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+    </script>
+</body>
+
+
+
+</html>

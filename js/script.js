@@ -1,8 +1,10 @@
 // Lista de imagens e títulos
 const images = [
-    { src: 'images/income_statement.png', title: 'Income Statement Dashboard',link: 'Data Analysis Projects/income_statement.html' },
-    { src: 'images/vagas_portugal.png', title: 'Data Analyst Jobs in Portugal Dashboard', link: 'Data Analysis Projects/job_postings_portugal.html' }
+    { src: 'images/data_analysis_projects/income_statement_dashboard.png', title: 'Income Statement Dashboard',link: 'data_analysis_project/income_statement/income_statement.html' },
+    { src: 'images/data_analysis_projects/databricks.png', title: 'ETL using Databricks', link: 'data_analysis_project/etl_databricks/pyspark.html' },
+    { src: 'images/data_analysis_projects/rossmann.png', title: 'Sales Prediction', link: 'data_analysis_project/etl_databricks/pyspark.html' }
 ];
+
 
 let currentIndex = 0; // Começa com a primeira imagem
 

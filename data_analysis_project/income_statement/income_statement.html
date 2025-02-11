@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETL Income Statement</title>
+    <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet">
+    <link href="../../css/main.css" rel="stylesheet"> <!-- Referência ao CSS criado -->
+</head>
+<body id="projects">
+
+    <div class="container">
+        <h1>ETL Income Statement</h1>
+
+        <img src="../../images/data_analysis_projects/income_statement_dashboard.png" width="700" height="400">
+
+        
+        
+        <div class="links">
+            <a href="https://app.powerbi.com/view?r=eyJrIjoiNmMxMDdhYjYtMWFkMS00YjAyLThhZjQtNzA2MzZiZThkYzBjIiwidCI6ImYwZGU2ZTJmLWFiZTgtNGQ1OS05Yzc1LWU4ODdhMTUwN2IxYiIsImMiOjl9" target="_blank">
+                <img src="../../icons/powerbi.png" alt="Power BI" width="30" height="40">
+            </a>
+            <a href="https://github.com/OscarFantozzi/ETL-Income-Statement" target="_blank">
+                <img src="../../icons/github.png" alt="GitHub" width="65" height="30">
+            </a>
+            
+                <img src="../../icons/reading.png" alt="Reading" width="25" height="25">20'
+          
+        </div>
+       
+
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <h3>Table of contents</h3>
+            <ul>
+                <li><a href="#project-overview">Project Overview</a></li>
+                <li><a href="#what-is-an-income-statement">What is an Income Statement?</a></li>
+                <li><a href="#key-steps-of-an-etl">Key Steps of an ETL</a></li>
+                <li><a href="#fact-and-dimension-tables">Fact and Dimension Tables</a></li>
+                <li><a href="#understanding-the-project-data">Understanding the Project Data</a></li>
+                <li><a href="#creating-the-virtual-environment">Creating the Virtual Environment</a></li>
+                <li><a href="#installing-required-libraries">Installing Required Libraries</a></li>
+                <li><a href="#configuring-jupyter-notebook">Configuring Jupyter Notebook</a></li>
+                <li><a href="#configuring-jupyter-lab">Configuring Jupyter Lab</a></li>
+                <li><a href="#connecting-to-the-sql-server-database">Connecting to the SQL Server Database</a></li>
+                <li><a href="#first-etl-step-extract">First ETL Step: Extract</a></li>
+                <li><a href="#second-etl-step-transform">Second ETL Step: Transform</a></li>
+                <li><a href="#third-etl-step-load">Third ETL Step: Load</a></li>
+                <li><a href="#creating-the-etl-class">Creating the ETL Class</a></li>
+                <li><a href="#creating-the-etl-py-file">Creating the ETL.py File</a></li>
+                <li><a href="#creating-the-requirements-txt-file">Creating the requirements.txt File</a></li>
+                <li><a href="#automating-the-etl-with-windows-task-scheduler">Automating the ETL with Windows Task Scheduler</a></li>
+                <li><a href="#connecting-power-bi-to-the-database">Connecting Power BI to the Database</a></li>
+                <li><a href="#modeling-and-relationships-of-the-model">Modeling and Relationships of the Model</a></li>
+                <li><a href="#income-statement-analysis">Income Statement Analysis</a></li>
+                <li><a href="#conclusion-and-next-steps">Conclusion and Next Steps</a></li>
+            </ul>
+
+        </nav>
+        <!-- Sections -->
+        <section id="project-overview">
+            <h2>Project Overview</h2>
+            
+                <p>Many companies, both in Brazil and worldwide, are still stuck with manual methods to extract and process data from their ERP systems. Imagine, for example, the task of creating an annual report: the user needs to extract a report for each month, manually process the data, and finally consolidate 12 separate files to generate the annual report. Now, multiply that by the last 5 years. The time and effort involved are immense, not to mention the risk of manual errors.</p>
+                
+                <p>To solve this challenge, I developed a project that automates this entire process. Using Python, I created an ETL (Extract, Transform, Load) pipeline that, with just one click, performs all the necessary steps to generate an Income Statement (DRE) from CSV reports.</p>
+            
+        
+            <h3>How It Works:</h3>
+            <ul>
+                <li><strong>Extraction:</strong> The script automatically loads financial data from the CSV files.</li>
+                <li><strong>Transformation:</strong> Transformation rules are applied to ensure the data is consistent and ready for analysis.</li>
+                <li><strong>Load:</strong> The transformed data is stored in a relational database, centralizing the information for easy access and management.</li>
+                <li><strong>Visualization:</strong> A dashboard is developed in Power BI to display the results.</li>
+            </ul>
+        
+            <h3>Advantages:</h3>
+            <ul>
+                <li><strong>Centralized and Secure Management:</strong> The database facilitates the maintenance and updating of information, ensuring data integrity and security.</li>
+                <li><strong>Faster Queries:</strong> With structured data, queries in Power BI are quicker, avoiding long wait times when loading data.</li>
+                <li><strong>Scalability:</strong> The solution is easily scalable, supporting increased data volumes without compromising performance.</li>
+                <li><strong>Increased Operational Efficiency:</strong> Automation reduces the time and effort required for data processing, eliminating manual errors and increasing productivity.</li>
+            </ul>
+        </section>
+
+        <section id="what-is-an-income-statement">
+            <h2>What is an Income Statement?</h2>
+            <p>When we talk about business management, the Income Statement is one of the most crucial reports. After all, every company wants to know if its operations are generating the expected results. While the cash flow shows how much money the company has at a given time, the Income Statement measures operational performance.</p>
+            <p>There are two main types of Income Statements: Accounting and Managerial. In this project, I will focus on the Managerial Income Statement, but first, let's understand the main difference between them.</p>
+        
+            <h3>Accounting Income Statement:</h3>
+            <ul>
+                <li><strong>Compliance with Legal Requirements:</strong> The Accounting Income Statement is designed to meet tax and legal requirements.</li>
+                <li><strong>Compliance with Accounting Standards:</strong> It strictly follows accounting principles, ensuring transparency and accuracy for external stakeholders such as investors and the government.</li>
+                <li><strong>Based on Double-Entry Accounting:</strong> Every transaction involves a debit and a credit. For example, a sale might result in a revenue credit and a cash or accounts receivable debit if the sale is on credit.</li>
+            </ul>
+        
+            <h3>Managerial Income Statement:</h3>
+            <ul>
+                <li><strong>Focus on Internal Management:</strong> This version of the Income Statement is intended for internal use, especially for managers who need to make quick and informed decisions.</li>
+                <li><strong>Targeted Analysis:</strong> It emphasizes specific analyses that help in business management and strategy without the need to follow debit and credit norms.</li>
+            </ul>
+        </section>
+
+        <section id="key-steps-of-an-etl">
+            <h2>Key Steps of an ETL</h2>
+            <p>ETL (Extract, Transform, Load) is a process that involves extracting data from various sources, transforming that data to be ready for analysis, and finally loading it into a database or other storage system.</p>
+            <p>In the context of this project, the main steps follow the traditional structure of an ETL process:</p>
+        
+            <h3>1. Data Loading (Extract):</h3>
+            <ul>
+                <li>Reading and storing the CSV files in a SQL Server database.</li>
+            </ul>
+        
+            <h3>2. Data Transformation (Transform):</h3>
+            <ul>
+                <li>Implementing in Python the transformations and treatments that were previously performed in Power Query.</li>
+            </ul>
+        
+            <h3>3. Loading into the Database (Load):</h3>
+            <ul>
+                <li>Inserting the transformed data into the SQL Server database, ready to be consumed by Power BI.</li>
+            </ul>
+        </section>
+
+        <section id="fact-and-dimension-tables">
+            <h2>Fact and Dimension Tables</h2>
+            <p>Fact tables are tables that store the history of business events, such as sales or transactions, and typically have a date column. They connect to dimension tables through <strong>foreign keys</strong> (a field in one table that refers to the primary key of another table, creating a link between the two tables).</p>
+            <p>Dimension tables complement the information in fact tables by providing details such as product names or locations. They use <strong>primary keys</strong> (a unique field in a table that uniquely identifies each record, ensuring there are no duplicates).</p>
+            <p>Together, these tables enable detailed analysis by linking the history of events to their descriptions.</p>
+        </section>
+
+        <section id="understanding-the-project-data">
+            <h2>Understanding the Project Data</h2>
+            <p>Let's now briefly explore the data used in this project. The exported files are organized in a specific folder, containing data for three years: 2022, 2023, and 2024. Each file follows a naming convention that facilitates identifying the entries by year and type of account. For example, the file <code>fLancamento1_ano1</code> contains all entries related to account types 01.xx.xx for the year 2022, while <code>fLancamento2_ano2</code> refers to accounts of type 02.xx.xx for the year 2023, and so on.</p>
+            <img src="img/media/image1.png" alt="Data illustration">
+        
+            <h3>Table: dEstruturaDRE</h3>
+            <p><strong>Type:</strong> Dimension</p>
+            <ul>
+                <li><strong>id:</strong> Unique identifier that combines a group code with the managerial account number.</li>
+                <li><strong>index:</strong> Numeric index that defines the sequential order of managerial accounts.</li>
+                <li><strong>contaGerencial:</strong> Name of the managerial account that describes specific types of income, expenses, or results.</li>
+                <li><strong>subtotal:</strong> Indicator that signals whether the row represents a subtotal or final calculated value.</li>
+                <li><strong>empresa:</strong> Name of the company or location to which the financial data refers.</li>
+            </ul>
+        
+            <h3>Table: dPlanoConta</h3>
+            <p><strong>Type:</strong> Dimension</p>
+            <ul>
+                <li><strong>id:</strong> Unique identifier that combines the hierarchical code with the specific row number of the description.</li>
+                <li><strong>index:</strong> Numeric index that defines the sequential order of items within the description.</li>
+                <li><strong>descricaoN1:</strong> Level 1 description that specifies the general type of transaction or category.</li>
+                <li><strong>descricaoN2:</strong> Level 2 description that provides further or more specific detail of the transaction.</li>
+                <li><strong>detalharN2:</strong> Binary indicator that shows whether there is additional detail (0 for no detail, 1 for detail).</li>
+                <li><strong>mascaraDRE_id:</strong> Reference to the DRE mask identifier, associating the row with a specific DRE category.</li>
+                <li><strong>tipoLancamento:</strong> Type of entry that indicates the nature of the transaction, with values like 1 for addition and -1 for subtraction.</li>
+            </ul>
+        
+            <h3>Table: fOrcamento</h3>
+            <p><strong>Type:</strong> Fact</p>
+            <ul>
+                <li><strong>competencia_data:</strong> Competency date indicating the period to which the transaction or value refers.</li>
+                <li><strong>planoContas_id:</strong> Account plan identifier that associates the value with a specific category within the accounting.</li>
+                <li><strong>valor:</strong> Monetary value recorded for the specific transaction or account on the indicated competency date.</li>
+            </ul>
+        
+            <h3>Table: fPrevisao</h3>
+            <p><strong>Type:</strong> Fact</p>
+            <ul>
+                <li><strong>competencia_data:</strong> Competency date indicating the accounting period to which the recorded values refer.</li>
+                <li><strong>planoContas_id:</strong> Account plan identifier that classifies the nature of the transaction or accounting item.</li>
+                <li><strong>valor:</strong> Monetary amount associated with the specific account on the indicated competency date.</li>
+            </ul>
+        
+            <h3>Tables: fLancamento1_ano1 / fLancamento2_ano1 / fLancamento3_ano1</h3>
+            <p><strong>Type:</strong> Fact</p>
+            <ul>
+                <li><strong>competencia_data:</strong> Competency date indicating the accounting period to which the recorded values refer.</li>
+                <li><strong>planoContas_id:</strong> Account plan identifier that classifies the nature of the transaction or accounting item.</li>
+                <li><strong>valor:</strong> Monetary amount associated with the specific account on the indicated competency date.</li>
+            </ul>
+        </section>
+
+        <section id="creating-the-virtual-environment">
+            <h2>Creating the Virtual Environment</h2>
+            <p>Creating a virtual environment is essential to isolate the packages used in a project, ensuring that library versions are consistent and avoiding the notorious "works on my machine" problem. At the end of the project, a <code>requirements.txt</code> file is generated, listing all the libraries installed in that environment. This allows the script to be executed in any environment consistently, as long as the <code>requirements.txt</code> is used.</p>
+        
+            <p>To create the virtual environment, I use Windows PowerShell. Here are the steps I follow:</p>
+        
+            <h3>Navigate to the Project Folder:</h3>
+            <ul>
+                <li>First, I navigate to the folder where my project is located. To do this, I use the <code>cd</code> command followed by the project folder path.</li>
+                <li>Then, I run the following command to create the virtual environment.</li>
+                <li>I replace <code>"environment_name"</code> with the name I want to give the virtual environment.</li>
+            </ul>
+            <img src="img/media/image2.png" alt="Creating Virtual Environment">
+        
+            <p>Now, all the packages I install will be isolated in this environment.</p>
+        
+            <h3>If You Face Issues Running Python Commands:</h3>
+            <p>If I can't run Python commands in PowerShell, it may be necessary to add Python to the Windows environment variables. To do this:</p>
+        
+            <ul>
+                <li>I type "variables" in the Windows search bar and select "Edit the system environment variables."</li>
+            </ul>
+            <img src="img/media/image3.png" alt="Edit System Environment Variables">
+        
+            <ul>
+                <li>In the window that appears, I click "Environment Variables..."</li>
+                <li>And then "Edit..."</li>
+            </ul>
+            <img src="img/media/image4.png" alt="Edit Environment Variables">
+        
+            <ul>
+                <li>Lastly, I click "New" and add the path where Python is installed on my computer.</li>
+            </ul>
+            <img src="img/media/image5.png" alt="Add Python Path">
+        </section>
+
+        <section id="installing-required-libraries">
+            <h2>Installing Required Libraries</h2>
+            <p>Now I will install the libraries needed to perform the ETL process. For this, I use Jupyter Notebook or Jupyter Lab as the IDE, which are the interfaces where I write and run my code. Additionally, I need <code>pandas</code>, a powerful data manipulation library, and <code>pyodbc</code>, which I will use to connect to a SQL Server instance. As the project progresses, I will install other libraries as needed.</p>
+        
+            <p>To install, I use the following commands:</p>
+            <img src="img/media/image6.png" alt="Installing Libraries Step 1">
+            <img src="img/media/image7.png" alt="Installing Libraries Step 2">
+        </section>
+
+        <section id="configuring-jupyter-notebook">
+            <h2>Configuring Jupyter Notebook</h2>
+            <p>An IDE, or Integrated Development Environment, is a tool that combines different features such as a code editor, debugger, and terminal to facilitate software development. In the case of Jupyter Notebook, the web interface acts as the IDE where I write and run my code.</p>
+        
+            <p>To open Jupyter Notebook, I use the command:</p>
+            <img src="img/media/image8.png" alt="Jupyter Notebook Command">
+        
+            <p>After execution, the terminal shows me two URLs where I can access Jupyter Notebook, in addition to automatically opening a notebook with the default URL. To open Jupyter Notebook, I usually need to copy this URL and paste it into the browser.</p>
+            <img src="img/media/image9.png" alt="Jupyter Notebook URL 1">
+            <img src="img/media/image10.png" alt="Jupyter Notebook URL 2">
+            <img src="img/media/image11.png" alt="Jupyter Notebook URL 3">
+        
+            <p>However, I prefer to automate this process so that Jupyter Notebook opens directly in Google Chrome, which is the browser I'm using. To do this, in PowerShell, I run a command to generate the Jupyter configuration file. This file is created in the <code>.jupyter</code> folder, which in my case is located at <code>C:\Users\oscar\.jupyter</code>.</p>
+            <img src="img/media/image12.png" alt="Generating Jupyter Configuration File">
+        
+            <p>To edit the configuration file, I open it with Notepad.</p>
+            <img src="img/media/image13.png" alt="Opening Jupyter Configuration File">
+        
+            <p>Once open, I use <code>Ctrl + F</code> to search for the following text: <code>c.ServerApp.browser</code>.</p>
+            <img src="img/media/image14.png" alt="Searching for c.ServerApp.browser">
+        
+            <p>Then, I remove the comment (symbol <code>#</code>) and enclose in single quotes (<code>' '</code>) the path where Chrome is installed on my machine. In my case, Chrome is located at <code>"C:\Program Files\Google\Chrome.exe"</code>. After that, I save the file and run Jupyter Notebook again.</p>
+        
+            <h3>Note:</h3>
+            <p>When copying the Chrome path, I replaced the backslashes (<code>\</code>) with double backslashes (<code>\\</code>), or you can replace them with forward slashes (<code>/</code>). Additionally, add a space and <code>'%s'</code> after the path in double quotes. For example:</p>
+            <img src="img/media/image15.png" alt="Jupyter Configuration Example">
+        
+            <p>Also, I checked if Chrome is in the Windows environment variables (since I'm using Windows).</p>
+        
+            <p>After following these steps, Jupyter Notebook will automatically open in Google Chrome.</p>
+        </section>
+
+        <section id="configuring-jupyter-lab">
+            <h2>Configuring Jupyter Lab</h2>
+            <p>Another widely used IDE is Jupyter Lab. It offers significant advantages over Jupyter Notebook, such as real-time collaboration, a sidebar with a file manager, and the ability to collapse code cells, which greatly improves readability. These features make Jupyter Lab an attractive choice for more complex projects.</p>
+        
+            <p>In this specific project, I will choose to use Jupyter Lab, mainly because of its interface options and the sidebar, which allow me to have better control of the files and a more organized view of my work. These tools provide a more efficient and pleasant development environment, especially when dealing with multiple files and tasks.</p>
+        
+            <h3>To install Jupyter Lab:</h3>
+            <img src="img/media/image16.png" alt="Installing Jupyter Lab Step 1">
+            <img src="img/media/image17.png" alt="Installing Jupyter Lab Step 2">
+        
+            <p>After installation, just launch it:</p>
+            <img src="img/media/image18.png" alt="Launching Jupyter Lab Step 1">
+            <img src="img/media/image19.png" alt="Launching Jupyter Lab Step 2">
+        
+            <h3>Using the virtual environment inside Jupyter Lab</h3>
+            <p>To use the virtual environment created in the previous steps, I first need to install the Jupyter Lab kernel within the virtual environment. To do this:</p>
+            <img src="img/media/image20.png" alt="Installing Jupyter Kernel Step 1">
+            <img src="img/media/image21.png" alt="Installing Jupyter Kernel Step 2">
+        
+            <p>And now I install the environment inside Jupyter Lab with the command:</p>
+            <img src="img/media/image22.png" alt="Installing Environment in Jupyter Lab Step 1">
+            <img src="img/media/image23.png" alt="Installing Environment in Jupyter Lab Step 2">
+        
+            <p>Once this is done, just launch Jupyter Lab and select the virtual environment within the interface. I go to Change Kernel > and select the newly created Kernel.</p>
+            <img src="img/media/image24.png" alt="Changing Kernel in Jupyter Lab">
+            <img src="img/media/image25.png" alt="Selecting Kernel in Jupyter Lab">
+        
+            <p>If I did everything correctly, I can see the virtual environment in use in the project in the top right corner of the notebook; in my case, the virtual environment I created earlier is <code>venv</code>.</p>
+            <img src="img/media/image26.png" alt="Virtual Environment in Jupyter Lab">
+        </section>
+
+        <section id="connecting-to-the-sql-server-database">
+            <h2>Connecting to the SQL Server Database</h2>
+            <p>In this step, I will connect to a local (on-premises) database using the <code>pyodbc</code> library. In my case, I will not provide the DATABASE parameter as I intend to create the database using <code>pyodbc</code>.</p>
+        
+            <p>Thus, I will only pass the driver and the server and will connect directly to the SQL Server master instance. Next, I will create the database connection, create a cursor, and finally close the cursor and connection.</p>
+        
+            <p>The cursor is a <code>pyodbc</code> object that basically executes SQL queries. The official documentation reference is at the following link:</p>
+            <p><a href="https://learn.microsoft.com/en-us/sql/connect/python/pyodbc/step-3-proof-of-concept-connecting-to-sql-using-pyodbc?view=sql-server-ver16">PyODBC Documentation</a></p>
+        
+            <h3>Steps:</h3>
+            <ol>
+                <li>Test the connection</li>
+                <li>Create a cursor</li>
+                <li>Close the cursor and connection</li>
+            </ol>
+        
+            <img src="img/media/image27.png" alt="Connecting to SQL Server Database">
+        </section>
+
+        <section id="first-etl-step-extract">
+            <h2>First ETL Step: Extract</h2>
+            <p>We have reached the first step of our ETL process, which is data extraction to load them into a database. With the SQL Server connection open, the first step is to check if the necessary database already exists. If it doesn't exist, I will create it. Next, I will check if the tables I need to load are already present in the database; if not, I will create them.</p>
+        
+            <h3>Summary of steps:</h3>
+            <ol>
+                <li>Check if there is a database named ETL created; if it does not exist, create it;</li>
+                <li>Check if the table I want to load exists; if not, create it;</li>
+                <li>Repeat the steps for all files.</li>
+            </ol>
+        
+            <h3>1 -- Step 1: Check if there is a database named ETL created; if it does not exist, create it.</h3>
+            <img src="img/media/image28.png" alt="Check if Database Exists Step 1">
+            <img src="img/media/image29.png" alt="Check if Database Exists Step 2">
+        
+            <p>After executing the command below, a database named DRE was created in the local SQL Server instance. This ensures that even if the database is accidentally deleted, the ETL will continue to execute, as we will always have the creation of a database if it does not exist.</p>
+        
+            <h3>2 -- Step 2: Check if the table I want to load exists; if not, create it.</h3>
+            <p>In this step, I will need to install <code>sqlalchemy</code> to read the table and automatically create it in the database if it does not exist. For this, I will use a pandas method called <code>to_sql</code>.</p>
+        
+            <p>Installing <code>sqlalchemy</code> and importing the <code>create_engine</code> function:</p>
+            <img src="img/media/image30.png" alt="Installing sqlalchemy Step 1">
+            <img src="img/media/image31.png" alt="Installing sqlalchemy Step 2">
+            <img src="img/media/image32.png" alt="Importing create_engine">
+            <img src="img/media/image33.png" alt="Creating connection string with sqlalchemy">
+        
+            <p>First, I created the connection string similar to the one created earlier in <code>pyodbc</code>.</p>
+            <p>After that, I created the engine, which is the <code>sqlalchemy</code> object that connects to SQL Server, and after reading the file, I used the pandas <code>to_sql</code> method to insert the read table directly into the database. The <code>if_exists = 'replace'</code> parameter replaces the already existing data with each execution.</p>
+        
+            <p>As we can see in the following image, the table was loaded but brought several blank rows. In the extraction step, I will not worry about data and table transformation; I will leave that for Step 2 of the ETL: Transform.</p>
+            <img src="img/media/image34.png" alt="Loaded Table with Blank Rows">
+        
+            <h3>3 -- Step 3: Repeat the steps for all files.</h3>
+            <p>In this step, I will load all the tables that exist within the folder.</p>
+        
+            <p>To do this, I will loop through all the files and load the CSV files into the database.</p>
+            <img src="img/media/image35.png" alt="Loop through Files and Load Data">
+        
+            <p>As we can see in the following image, all the CSV files were loaded into the DRE database.</p>
+            <img src="img/media/image36.png" alt="All CSV Files Loaded into DRE Database">
+        
+            <p>To make the code more organized and easier to maintain, I will encapsulate all the data extraction steps within a function called <code>extract()</code>. This not only improves code clarity and reusability but also allows some steps to be dynamically configured through parameters, making the process more flexible.</p>
+            <img src="img/media/image37.png" alt="Encapsulating Extraction Steps into a Function">
+            <img src="img/media/image38.png" alt="Function extract()">
+        </section>
+
+        <section id="second-etl-step-transform">
+            <h2>Second ETL Step: Transform</h2>
+            <p>The second step of ETL is data transformation.</p>
+            <p>In this step, I will check the data types, handle null values, and perform transformations when necessary.</p>
+            <p>I will use the transformations applied in Power Query as a reference and replicate them in Jupyter Lab. Finally, I will encapsulate all the steps within a function and proceed to the next step: Load.</p>
+            <p>I will start with the <code>dEstruturaDRE</code> table. The applied steps were as follows:</p>
+            <img src="img/media/image39.png" alt="Power Query Transformation Steps">
+        
+            <h3>1 -- Promoted Headers:</h3>
+            <p>The first row was used as the header. I will skip this step because the data was already loaded with the correct header.</p>
+        
+            <h3>2 -- Changed Type:</h3>
+            <p>Shows how the data types were defined.</p>
+            <img src="img/media/image40.png" alt="Changed Type Transformation Step">
+        
+            <h3>3 -- Renamed Columns:</h3>
+            <p>The columns were renamed to English.</p>
+            <img src="img/media/image41.png" alt="Renamed Columns">
+        
+            <h3>4 -- Filtered Rows:</h3>
+            <p>Here, null values were handled by filtering the <code>id</code> column to exclude null and empty values.</p>
+            <img src="img/media/image42.png" alt="Filtered Rows Step">
+        
+            <p>Now I will apply the same transformations in pandas:</p>
+            <img src="img/media/image43.png" alt="Applying Transformation in Pandas">
+            <img src="img/media/image44.png" alt="Applying Transformation in Pandas Step 2">
+        
+            <h3>Table <code>dPlanoConta</code>:</h3>
+            <img src="img/media/image45.png" alt="dPlanoConta Table">
+        
+            <h3>1 -- Promoted Headers:</h3>
+            <p>As done earlier, I will skip this step.</p>
+        
+            <h3>2 -- Changed Type:</h3>
+            <p>Data typing as in the following image:</p>
+            <img src="img/media/image46.png" alt="Changed Type for dPlanoConta">
+        
+            <h3>3 -- Filtered Rows 1:</h3>
+            <p>Removal of null values.</p>
+        
+            <h3>4 -- Renamed Columns:</h3>
+            <p>Columns renamed from Portuguese to English.</p>
+            <img src="img/media/image47.png" alt="Renamed Columns for dPlanoConta">
+        
+            <p>Applying the same transformations in pandas:</p>
+            <img src="img/media/image48.png" alt="Applying Transformation to dPlanoConta in Pandas">
+            <img src="img/media/image49.png" alt="Applying Transformation to dPlanoConta Step 2">
+        
+            <h3>Table <code>fOrcamento</code>:</h3>
+            <img src="img/media/image50.png" alt="fOrcamento Table">
+        
+            <h3>1 -- Promoted Headers:</h3>
+            <p>Step not necessary.</p>
+        
+            <h3>2 -- Changed Type:</h3>
+            <p>Data typing as follows:</p>
+            <img src="img/media/image51.png" alt="Changed Type for fOrcamento">
+        
+            <h3>3 -- Renamed Columns:</h3>
+            <p>Rename the columns as follows:</p>
+            <img src="img/media/image52.png" alt="Renamed Columns for fOrcamento">
+        
+            <h3>4 -- Change Type with Locale:</h3>
+            <p>Change the date according to the local date.</p>
+            <p>Applying the transformations in pandas:</p>
+            <img src="img/media/image53.png" alt="Applying Transformation to fOrcamento Step 1">
+            <img src="img/media/image54.png" alt="Applying Transformation to fOrcamento Step 2">
+        
+            <h3>Table <code>fPrevisao</code>:</h3>
+            <img src="img/media/image55.png" alt="fPrevisao Table">
+        
+            <h3>1 -- Promoted Headers:</h3>
+            <p>I skipped this step because pandas read it correctly.</p>
+        
+            <h3>2 -- Changed Type:</h3>
+            <p>Data typing as follows:</p>
+            <img src="img/media/image56.png" alt="Changed Type for fPrevisao">
+        
+            <h3>3 -- Renamed Columns:</h3>
+            <p>Rename columns as follows:</p>
+            <img src="img/media/image57.png" alt="Renamed Columns for fPrevisao">
+        
+            <h3>4 -- Changed Type with Locale:</h3>
+            <p>Change the date to the local format.</p>
+        
+            <h3>Resolving Error When Converting Numeric Text Values to Float</h3>
+            <h4>The Problem:</h4>
+            <p>The values had decimal separators as "." (period), but in Python, the period is the default decimal separator. However, the presence of multiple periods in numeric values led to conversion errors.</p>
+            <img src="img/media/image58.png" alt="Decimal Conversion Error">
+        
+            <h4>The Solution:</h4>
+            <p>To solve this, I needed to replace the last period (which separates the decimal places) with a temporary character, such as <code>#</code>. Then, I replaced the other periods with an empty string (<code>""</code>), and finally, I changed the <code>#</code> back to <code>.</code> so that Python correctly recognized the decimal separator.</p>
+            <p>I used the <code>apply</code> function along with a lambda function, applying the <code>rpartition</code> method to perform this replacement. <code>rpartition</code> splits a string into three parts based on the last separator found. This is useful because it allows me to correctly identify and manipulate the decimal separator.</p>
+        
+            <h3>Example of <code>rpartition</code>:</h3>
+            <p>When I applied <code>rpartition</code>, it split the string at the last period, as shown below:</p>
+            <img src="img/media/image59.png" alt="rpartition Example">
+        
+            <h3>Another Challenge:</h3>
+            <p>I noticed that some integer values in the dataset were not in the format <code>xxx.00</code>; for example, the number 987. If I did not address this case, these integer numbers could be misinterpreted as decimals during conversion, causing errors.</p>
+            <img src="img/media/image60.png" alt="Integer Values Format Issue">
+        
+            <p>Because when adding the integer numbers, they would become decimal values as shown below:</p>
+            <img src="img/media/image61.png" alt="Integer Values Becoming Decimal">
+        
+            <h4>The Solution for Integer Values:</h4>
+            <p>I applied a rule to format integer numbers as <code>xxx.00</code> before making the replacements, ensuring that the conversion to float was accurate.</p>
+            <img src="img/media/image62.png" alt="Formatting Integer Values as xxx.00">
+        
+            <p>Applying the steps in pandas would look like this:</p>
+            <img src="img/media/image63.png" alt="Applying Transformation to Integer Values in Pandas">
+        
+            <h3><code>fLancamentos</code> Tables</h3>
+            <img src="img/media/image64.png" alt="fLancamentos Tables">
+        
+            <p>For the <code>fLancamentos</code> tables, I will first treat one, and since they all have the same structure, I can replicate the same treatment for the others through a <code>for</code> loop.</p>
+        
+            <h3>Main Treatments:</h3>
+            <ol>
+                <li><strong>Changed Type:</strong> Data typing;</li>
+                <img src="img/media/image65.png" alt="Changed Type for fLancamentos">
+                <li><strong>Renamed Columns:</strong> Rename the columns;</li>
+                <img src="img/media/image66.png" alt="Renamed Columns for fLancamentos">
+                <li><strong>Filtered Rows 1:</strong> Remove null values;</li>
+                <li><strong>Changed Type with Locale:</strong> Change the date according to the local format.</li>
+            </ol>
+        
+            <p>Performing the same steps in pandas:</p>
+            <img src="img/media/image67.png" alt="Applying Transformation to fLancamentos in Pandas">
+            <img src="img/media/image68.png" alt="Applying Transformation to fLancamentos Step 2">
+        
+            <h3>Automating the Treatment</h3>
+            <p>After performing the treatment on all tables, I will create a function that encapsulates all the data treatment and transformation steps.</p>
+            <p>The great advantage of this approach is ease of maintenance: if new tables are added to the folder, just include the specific treatment for that table within the function.</p>
+        
+            <p>Additionally, to make the function more dynamic, I will allow the user to specify any folder path. This ensures that if the files change location, the ETL process will not be affected.</p>
+            <img src="img/media/image69.png" alt="Automating the Transformation Process">
+        
+            <p>The complete function can be seen in the <code>ETL_DRE.py</code> file.</p>
+        
+            <p>Basically, the function loops through all the files in a folder and performs the necessary treatment according to the name. After the treatment, the tables are inserted into a list and returned by the function.</p>
+        </section>
+        
+        <section id="third-etl-step-load">
+            <h2>Third ETL Step: Load</h2>
+            <p>The last step of ETL is data loading. In this step, I created a function that loads the treated and transformed data into a database specified by the user.</p>
+        
+            <h3>The main steps are:</h3>
+        
+            <h3>1 -- Activate the SQL Server database connection:</h3>
+            <img src="img/media/image70.png" alt="Activate SQL Server Database Connection">
+        
+            <h3>2 -- Process the data:</h3>
+            <img src="img/media/image71.png" alt="Processing Data">
+        
+            <h3>3 -- Create the new database where the processed data will be stored:</h3>
+            <img src="img/media/image72.png" alt="Create New Database for Processed Data">
+        
+            <h3>4 -- Load the processed data:</h3>
+            <img src="img/media/image73.png" alt="Loading Processed Data">
+        
+            <h3>5 -- Creating the Load function:</h3>
+            <img src="img/media/image74.png" alt="Creating Load Function">
+        
+            <h3>Testing the function:</h3>
+            <img src="img/media/image75.png" alt="Testing Load Function">
+        </section>
+
+        <section id="creating-the-etl-class">
+            <h2>Creating the ETL Class</h2>
+            <p>After creating and individually testing the ETL functions, it is time to organize everything into a class. Using a class allows structuring the code in a cleaner and more efficient way, with functions defined for each task. In this specific ETL, the class helps avoid code redundancy, such as the need to create the same database connection function multiple times.</p>
+        
+            <p>When initializing the class, the database connection is automatically established and inherited by all methods. This not only simplifies the code but also ensures that the connection is consistently reused in all ETL operations.</p>
+        
+            <p>Another great benefit is that I can create multiple ETL instances with different servers and folder paths. Simply copy the class and adjust the parameters as needed, making the process highly flexible and reusable.</p>
+        
+            <p>The complete class can be seen in the <a href="https://github.com/OscarFantozzi/ETL-Income-Statement/blob/master/scripts/ETL_DRE.py">ETL_DRE.py</a> file.</p>
+        </section>
+
+        <section id="creating-the-etl-py-file">
+            <h2>Creating the ETL.py File</h2>
+            <p>After creating the class, it's time to create the <code>ETL.py</code> file that will be used to automate the entire ETL.</p>
+        
+            <p>Creating it is quite simple, just open a new Python File and copy the used libraries, the class, and run the ETL methods, namely: <code>extract</code>, <code>transform</code>, <code>load</code>.</p>
+            <img src="img/media/image76.png" alt="ETL.py File Creation Step 1">
+            <img src="img/media/image77.png" alt="ETL.py File Creation Step 2">
+            <img src="img/media/image78.png" alt="ETL.py File Creation Step 3">
+        
+            <p>To run the file, I open the PowerShell terminal, navigate to the project folder, activate the virtual environment, and use the command below:</p>
+            <img src="img/media/image79.png" alt="Running ETL.py File in PowerShell">
+        
+            <p>If everything goes well, the ETL will execute all the steps. The printed messages above help to understand where any errors might occur.</p>
+        </section>
+
+        <section id="creating-the-requirements-txt-file">
+            <h2>Creating the requirements.txt File</h2>
+            <p>After testing the ETL and confirming that it is working correctly, it is important to ensure that others can reproduce the project on their own machines. To do this, I will export all the libraries and dependencies used in the project to a <code>.txt</code> file.</p>
+        
+            <p>To do this, in the PowerShell terminal, I navigate to the project folder and type the following commands:</p>
+            <img src="img/media/image80.png" alt="Creating requirements.txt File Command">
+        
+            <p>This will create a <code>requirements.txt</code> file in the project directory, which contains the list of all the libraries and specific versions used.</p>
+        
+            <p>This file is typically included in GitHub repositories, allowing anyone who clones the repository to easily recreate the environment needed to run the ETL on their local machine. It's important to note that some parameters, such as the database server, will need to be adjusted according to each user's individual setup.</p>
+            
+            <img src="img/media/image81.png" alt="Creating requirements.txt File Command">
+        
+        </section>
+
+        <section id="automating-the-etl-with-windows-task-scheduler">
+            <h2>Automating the ETL with Windows Task Scheduler</h2>
+            <p>To schedule the ETL execution via Windows Task Scheduler, follow these steps:</p>
+        
+            <h3>1 -- Type "Task Scheduler" in the Windows search or "Task Scheduler" (European Portuguese).</h3>
+            <img src="img/media/image82.png" alt="Task Scheduler Search">
+        
+            <h3>2 -- After opening the program, click "Create Basic Task":</h3>
+            <img src="img/media/image83.png" alt="Create Basic Task in Task Scheduler">
+        
+            <h3>3 -- Name the task and provide a brief description:</h3>
+            <img src="img/media/image84.png" alt="Name and Description of Task">
+        
+            <h3>4 -- Choose the frequency of execution:</h3>
+            <img src="img/media/image85.png" alt="Choose Frequency for Task">
+        
+            <h3>5 -- Choose the time and how often to repeat:</h3>
+            <img src="img/media/image86.png" alt="Choose Time for Task Execution">
+        
+            <h3>6 -- Click "Start a Program" and click next:</h3>
+            <img src="img/media/image87.png" alt="Start a Program for Task">
+        
+            <h3>7 -- In step 1, enter the path where the <code>python.exe</code> file is installed within the virtual environment used in the project. In item 2, enter the name of the file to be executed, and item 3 is the project folder.</h3>
+            <img src="img/media/image88.png" alt="Enter Path for Python.exe and Script">
+        
+            <h3>8 -- Done! Now just click Finish, and the task will be scheduled.</h3>
+            <img src="img/media/image89.png" alt="Task Created and Finished">
+        
+            <h3>9 -- To test the task, on the initial panel, click the task and then click Run. If everything goes well, a terminal will open, and a script will execute.</h3>
+            <img src="img/media/image90.png" alt="Test Run Task">
+            <img src="img/media/image91.png" alt="Run Task Execution">
+        
+            <h3>Note:</h3>
+            <p>The Windows Task Scheduler only works if the computer is on. So, in a scenario where there is a local server, for example, that runs 24/7, it might be interesting to run the script locally. Otherwise, there are other scheduling libraries, such as <code>scheduler</code>, that work even with the computer off.</p>
+        </section>
+
+        <section id="connecting-power-bi-to-the-database">
+            <h2>Connecting Power BI to the Database</h2>
+            <p>With the data already processed and transformed in the database, we just need to connect to the database and bring in the tables. To do this:</p>
+        
+            <h3>1 -- In the Power BI start menu, go to SQL Server.</h3>
+            <img src="img/media/image92.png" alt="Power BI SQL Server Option">
+        
+            <h3>2 -- Enter the server and database name. In my case, the server is local, so I enter <code>localhost</code>, and the database name I want to access is <code>DRE_Cleaned</code>.</h3>
+            <img src="img/media/image93.png" alt="Enter Server and Database Name in Power BI">
+        
+            <h3>3 -- After that, I have access to the database tables.</h3>
+            <img src="img/media/image94.png" alt="Access Database Tables in Power BI">
+        
+            <h3>4 -- Now, just select and go to "Transform Data." Theoretically, the data is already processed and typed, so we wouldn't need to add steps in Power Query, making data loading faster.</h3>
+            <img src="img/media/image95.png" alt="Transform Data in Power BI">
+        </section>
+
+        <section id="modeling-and-relationships-of-the-model">
+            <h2>Modeling and Relationships of the Model</h2>
+            <p>In the project, different CSV files are related to each other, forming the basis for the data model. Here is an explanation of how these relationships work:</p>
+        
+            <h3><code>dEstruturaDRE.csv</code> has a 1:* (one-to-many) relationship with <code>dPlanoConta.csv</code>:</h3>
+            <p>This means that each record in <code>dEstruturaDRE.csv</code> can be related to multiple records in <code>dPlanoConta.csv</code>. In other words, <code>dEstruturaDRE.csv</code> acts as a filter for <code>dPlanoConta.csv</code> through the <code>id</code> field.</p>
+            <img src="img/media/image96.png" alt="One-to-many Relationship between dEstruturaDRE and dPlanoConta">
+        
+            <h3><code>dPlanoConta.csv</code> has a 1:* relationship with <code>fLancamentos.csv</code>:</h3>
+            <p>Here, <code>dPlanoConta.csv</code> also filters the records in <code>fLancamentos.csv</code>. A single record in <code>dPlanoConta.csv</code> can be associated with many records in <code>fLancamentos.csv</code>.</p>
+            <img src="img/media/image97.png" alt="One-to-many Relationship between dPlanoConta and fLancamentos">
+        
+            <h3><code>dPlanoConta.csv</code> has a 1:* relationship with <code>fPrevisao.csv</code>:</h3>
+            <p>Similarly, <code>dPlanoConta.csv</code> filters <code>fPrevisao.csv</code>, where a record in <code>dPlanoConta.csv</code> can correspond to multiple records in <code>fPrevisao.csv</code>.</p>
+            <img src="img/media/image98.png" alt="One-to-many Relationship between dPlanoConta and fPrevisao">
+        
+            <h3><code>dPlanoConta.csv</code> has a 1:* relationship with <code>fOrcamento.csv</code>:</h3>
+            <p>Again, <code>dPlanoConta.csv</code> filters <code>fOrcamento.csv</code>, with the possibility of a record in <code>dPlanoConta.csv</code> being associated with multiple records in <code>fOrcamento.csv</code>.</p>
+            <img src="img/media/image99.png" alt="One-to-many Relationship between dPlanoConta and fOrcamento">
+        </section>
+
+        <section id="final-model">
+            <h2>Final Model</h2>
+            <p>The resulting data model is known as a <strong>snowflake</strong>, where we have two normalized dimension tables: <code>dPlanoConta.csv</code> and <code>dEstruturaDRE.csv</code>. Unlike the <strong>Star Schema</strong> model, where the fact tables connect directly to dimensions without sub-levels of normalization, the snowflake model offers a more detailed and segmented structure.</p>
+            <img src="img/media/image100.png" alt="Final Snowflake Model">
+        </section>
+        
+        <section id="income-statement-analysis">
+            <h2>Income Statement Analysis</h2>
+            <p>The Income Statement I am analyzing is from a chain of stores in three states: São Paulo, Rio de Janeiro, and Florianópolis. With that in mind, I thought of some strategic questions I would ask if I were the business owner, and how these questions could be visually answered in the dashboard. The key questions are:</p>
+        
+            <h3>1. How is the group's performance?</h3>
+            <p>(Considering the group as the sum of the three stores.)</p>
+            <img src="img/media/image101.png" alt="Group Performance Analysis">
+        
+            <h3>2. How is the individual performance of each store?</h3>
+            <img src="img/media/image102.png" alt="Individual Store Performance">
+        
+            <h3>3. Monthly, is what was planned being achieved or not?</h3>
+            <img src="img/media/image103.png" alt="Monthly Planned vs Actual Performance">
+        
+            <h3>4. Can I evaluate how EBITDA or another indicator is varying over the months?</h3>
+            <img src="img/media/image104.png" alt="EBITDA Variations Over Months">
+            <img src="img/media/image105.png" alt="EBITDA Chart">
+        
+            <h3>5. Of everything we sold, how much gross margin do I have to cover fixed expenses?</h3>
+            <img src="img/media/image106.png" alt="Gross Margin for Fixed Expenses">
+        
+            <h3>6. A consolidated view that I can toggle between horizontal and vertical analysis?</h3>
+            <img src="img/media/image107.png" alt="Consolidated View of Analysis">
+        </section>
+        
+        <section id="conclusion-and-next-steps">
+            <h2>Conclusion and Next Steps</h2>
+            <p>This project demonstrated how automating the ETL process using Python and Power BI can transform how companies manage and analyze their financial data. By automating the extraction, transformation, and loading of data for an Income Statement, we were able to create a robust and scalable solution that not only improves operational efficiency but also provides valuable insights for strategic decision-making.</p>
+        
+            <p>Using Jupyter Lab and a class structure in Python facilitated the organization and maintenance of the code, ensuring that the process is replicable and adaptable to different business contexts and needs. Additionally, the snowflake data modeling allowed for detailed and structured information analysis, optimizing query performance in Power BI.</p>
+        
+            <h3>Next Steps:</h3>
+            <ul>
+                <li><strong>Expanding the Dashboard:</strong> Expand the Power BI dashboard to include more KPIs (key performance indicators) that can help identify trends, such as profitability analysis by product or market segment.</li>
+                <li><strong>Implementing Automated Alerts:</strong> Add an automated alert system that notifies the user when certain indicators, such as EBITDA or gross margin, reach critical or unexpected values.</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p><a href="mailto:seuemail@example.com">Get in conctact</a></p>
+            <p>
+              <a href="https://github.com/OscarFantozzi" target="_blank">GitHub</a> |
+              <a href="https://www.linkedin.com/in/oscarfantozzi/" target="_blank">LinkedIn</a>
+              <p>&copy; 2025 Oscar Fantozzi - Data Analysis Portfolio</p>
+            </p>
+          </footer>
+          
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+        
+        
+        
+
+ 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    </div>
+    <script>
+        // Accordion functionality
+        var acc = document.getElementsByClassName("accordion");
+        for (var i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

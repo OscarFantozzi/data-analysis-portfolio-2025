@@ -1,19 +1,91 @@
 * {
   box-sizing: border-box;
 }
+
+
 html, body {
+  font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
   overflow-x: hidden; /* Remove a rolagem horizontal */
   overflow-y: hidden; /* Remove a rolagem vertical */
+  
+
+}
+
+
+.links {
+  display: flex; /* Alinha os itens lado a lado */
+  align-items: center; /* Alinha verticalmente a imagem e o texto */
+  margin-bottom: 20px; /* Espaço entre os links e o conteúdo */
+}
+
+.links a {
+  display: flex; /* Alinha a imagem e o texto lado a lado */
+  align-items: center; /* Alinha verticalmente a imagem e o texto */
+  margin-right: 20px; /* Mais espaço entre os links */
+  color: #156EF6; /* Cor do link */
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline; /* Efeito de hover */
+}
+
+.links img {
+  margin-right: 8px; /* Espaço entre a imagem e o texto */
+}
+
+.links p {
+  font-size: 16px;
+  color: #333; /* Cor do texto */
+  margin-top: 10px; /* Mais espaço acima do texto */
+}
+
+/* Estilo para o Table of Contents */
+.toc {
+  margin-top: 40px; /* Mais espaço antes do "Table of contents" */
+}
+
+.toc ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.toc ul li {
+  margin: 10px 0;
+}
+
+.toc ul li a {
+  color: #156EF6;
+  text-decoration: none;
+}
+
+.toc ul li a:hover {
+  text-decoration: underline;
 }
 
 
 
 a {
   text-decoration: none;
+}
+
+/* Estilo para o item de link no menu suspenso */
+.dropdown-content a {
+  color: white;
+  padding: 10px;
+  text-align: left;
+  text-decoration: transparent; /* Remove o sublinhado do link */
+  display: block;
+  cursor: pointer;
+}
+
+.dropdown-content a:hover {
+  background-color: #444; /* Altere a cor do fundo quando o link for hover */
+  cursor: pointer;
 }
 
 
@@ -96,6 +168,7 @@ a {
   font-size: 17px;
   opacity: 1;
   text-align: left;
+  cursor: pointer;
 }
 .v74_9 {
   width: 43px;
@@ -202,16 +275,18 @@ a {
 
 /* Estilo para o menu suspenso */
 .dropdown-content {
-  display: none; /* Esconde o menu por padrão */
-  position: absolute; /* Faz o menu aparecer em relação ao seu elemento pai */
-  background-color: #141316; /* Cor do fundo do menu */
-  min-width: 160px; /* Largura mínima do menu */
+  display: none;
+  position: absolute; /* Faz o menu aparecer sobre outros elementos */
+  background-color: #141316;
+  min-width: 160px;
   z-index: 9999; /* Garante que o menu fique sobre outros elementos */
-  border-radius: 4px; /* Bordas arredondadas do menu */
-  box-shadow: 0 4px 8px rgba(134, 134, 134, 0.2); /* Sombra para dar efeito de profundidade */
-  top: 120%; /* Posiciona o menu logo abaixo do título */
-  left: 0; /* Alinha o menu com a esquerda do título */
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(134, 134, 134, 0.2);
+  top: 120%; /* Coloca o menu logo abaixo */
+  left: 0;
+  cursor: pointer;
 }
+
 
 /* Estilo para os itens do menu */
 .dropdown-content p {
@@ -219,6 +294,7 @@ a {
   padding: 10px; /* Espaçamento interno dos itens */
   margin: 0; /* Remove a margem */
   text-align: left; /* Alinha o texto à esquerda */
+  cursor: pointer;
 }
 
 /* Exibir o menu quando o mouse passa sobre o título */
@@ -257,7 +333,7 @@ a {
 /* Ajustando o título com fundo */
 .carousel-title {
   font-size: 16px; /* Tamanho da fonte */
-  font-family: 'Arial', sans-serif; /* Fonte personalizada */
+  font-family: 'Inter', sans-serif; /* Fonte personalizada */
   color: white; /* Cor do texto */
   background-color: #156EF6; /* Retângulo com cor de fundo */
   padding: 10px 20px; /* Distância entre o texto e as bordas do retângulo */
@@ -284,35 +360,161 @@ a {
     background-color: #00bcd4; /* cor da bolinha ativa */
 }
 
-@media (max-width: 768px) {
-  .carousel-container {
-    width: 95%; /* Aumenta a largura do carrossel para 95% da tela */
-    max-width: 100%; /* Garante que o carrossel ocupe a tela inteira */
-    margin: 0 auto; /* Centraliza o carrossel */
-    top: 10%; /* Ajusta a posição vertical para o carrossel */
-    height: 40vh; /* Ajuste a altura do carrossel para 40% da altura da tela */
+/* Adiciona um contêiner para centralizar o conteúdo */
+body#projects {
+  background-color: white; /* Fundo branco */
+  color: black; /* Texto preto */
+  display: flex;
+  justify-content: center; /* Centraliza o conteúdo */
+  padding: 50px;
+  overflow-x: auto;
+  overflow-y: auto; 
+}
+
+/* Contêiner principal que vai limitar a largura e adicionar margens */
+#projects .container {
+  width: 45%; /* Ajuste a largura conforme necessário */
+  max-width: 1200px; /* Limita a largura máxima */
+  margin: 0 auto; /* Centraliza o conteúdo */
+}
+
+
+#projects h1 {
+  font-size: 24px; /* ou outra unidade válida */
+}
+#projects h2 {
+  font-size: 18px; /* ou outra unidade válida */
+}
+#projects h3 {
+  font-size: 14px; /* ou outra unidade válida */
+}
+
+
+/* Alinhar todos os h1, h2 e h3 na página de sales prediction */
+#projects h1, #projects h2, #projects h3 {
+  text-align: left; /* Alinha todos os h1, h2 e h3 à esquerda */
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+
+
+/* Ajuste para o título da tabela de conteúdos (h3) */
+#projects h3 {
+  font-size: 13;
+  font-weight: bold;
+  color: black;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+/* Ajustes para os títulos h2 */
+#projects h2 {
+  border-bottom: 1px solid rgba(169, 169, 169, 0.5);
+  font-size: 17;
+  font-weight: 700;
+  color: black;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+/* Ajustes gerais para parágrafos */
+#projects p {
+  font-size: 12px;
+  text-align: left; /* Alinha todos os parágrafos à esquerda */
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+  line-height: 1.6;
+}
+
+/* Ajuste para a tabela de conteúdos */
+#projects nav.toc {
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0;
+}
+
+/* Estilo para os itens da tabela de conteúdos */
+#projects nav.toc ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+#projects nav.toc ul li {
+  margin: 10px 0;
+}
+
+#projects nav.toc ul li a {
+  color: #156EF6;
+  text-decoration: none;
+}
+
+#projects nav.toc ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Ajustando o acordeão */
+#projects .accordion {
+  background-color: #f1f1f1;
+  color: black;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 14px;
+}
+
+#projects .active, #projects .accordion:hover {
+  background-color: #156EF6;
+  color: white;
+}
+
+#projects .panel {
+  padding-left: 20px;
+  display: none;
+  background-color: #f9f9f9;
+  overflow: hidden;
+  color: black;
+}
+
+#projects ul li {
+  margin-bottom: 10px; /* Adiciona um espaço de 10px entre cada item da lista */
+  font-size: 12px;
+}
+
+
+/* Ajustes de responsividade para telas menores */
+@media screen and (max-width: 768px) {
+  #projects h1 {
+    font-size: 30px;
   }
 
-  .carousel-image {
-    width: 100%; /* Garante que a imagem ocupe 100% da largura do carrossel */
-    height: auto; /* Mantém a proporção da imagem */
-    object-fit: cover; /* Ajusta a imagem para cobrir todo o espaço do carrossel */
+  #projects h2, #projects h3 {
+    font-size: 24px;
   }
 
-  .dot-container {
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-  }
-
-  .dot {
-    width: 8px; /* Tamanho menor para as bolinhas */
-    height: 8px;
-    margin: 0 5px;
-  }
-
-  .dot.active {
-    background-color: #00bcd4; /* Cor da bolinha ativa */
+  #projects nav ul {
+    padding-left: 15px;
   }
 }
 
+@media screen and (max-width: 480px) {
+  #projects h1 {
+    font-size: 24px;
+  }
+
+  #projects h2, #projects h3 {
+    font-size: 20px;
+  }
+
+  #projects nav ul {
+    padding-left: 10px;
+  }
+}
