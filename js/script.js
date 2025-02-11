@@ -2,7 +2,7 @@
 const images = [
     { src: 'images/data_analysis_projects/income_statement_dashboard.png', title: 'Income Statement Dashboard',link: 'data_analysis_project/income_statement/income_statement.html' },
     { src: 'images/data_analysis_projects/databricks.png', title: 'ETL using Databricks', link: 'data_analysis_project/etl_databricks/pyspark.html' },
-    { src: 'images/data_analysis_projects/rossmann.png', title: 'Sales Prediction', link: 'data_analysis_project/etl_databricks/pyspark.html' }
+    { src: 'images/data_analysis_projects/rossmann.png', title: 'Sales Prediction', link: 'data_science_projects/sales_prediction.html' }
 ];
 
 
